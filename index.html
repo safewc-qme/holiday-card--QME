@@ -14,7 +14,15 @@
     .play:hover { transform: scale(1.06); background: #00000088; }
     .play:active { transform: scale(0.98); }
     .play svg { width: 44%; height: 44%; fill: var(--fg); filter: drop-shadow(0 2px 6px #000a); }
-    .player { position: absolute; inset: 0; display: none; background: #000; }
+    .player {
+      position: absolute;
+      inset: 0;
+      display: none;
+      background: #000;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .player.show { display: block; }
     .greeting { position: fixed; left: 0; right: 0; bottom: 18px; text-align: center; font-size: 14px; color: var(--accent); letter-spacing: 0.02em; }
     @media (max-width: 520px) {
@@ -51,14 +59,12 @@
       mp4.classList.add('show');
       poster.style.display = 'none';
       mp4.play().catch(()=>{});
-      // no fullscreen
     }
 
     function playVimeo() {
       vimeo.src = VIMEO_EMBED;
       vimeo.classList.add('show');
       poster.style.display = 'none';
-      // no fullscreen
     }
 
     poster.addEventListener('click', () => {
