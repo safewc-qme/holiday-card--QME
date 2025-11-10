@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Holidays ✨</title>
+  <style>
+    :root { --bg: #0b0b0b; --fg: #ffffff; --accent: #ffffffcc; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    .wrap { position: fixed; inset: 0; display: grid; place-items: center; }
+    .card { position: relative; width: min(100vw, 900px); aspect-ratio: 16 / 9; background: #111; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px #0008; }
+    .poster { position: absolute; inset: 0; background: center / cover no-repeat; display: grid; place-items: center; cursor: pointer; }
+    .play { width: 84px; height: 84px; border-radius: 999px; background: #00000066; backdrop-filter: blur(2px); display: grid; place-items: center; transition: transform .2s ease, background .2s ease; border: 1px solid #ffffff33; }
+    .play:hover { transform: scale(1.06); background: #00000088; }
+    .play:active { transform: scale(0.98); }
+    .play svg { width: 44%; height: 44%; fill: var(--fg); filter: drop-shadow(0 2px 6px #000a); }
+    .player { position: absolute; inset: 0; display: none; background: #000; }
+    .player.show { display: block; }
+    .greeting { position: fixed; left: 0; right: 0; bottom: 18px; text-align: center; font-size: 14px; color: var(--accent); letter-spacing: 0.02em; }
+    @media (max-width: 520px) {
+      .card { width: 100vw; border-radius: 0; box-shadow: none; }
+      .greeting { bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="card" class="card">
+      <div id="poster" class="poster" role="button" aria-label="Play holiday video" title="Play" style="background-image: url('poster.jpg');">
+        <div class="play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+      <video id="mp4Player" class="player" playsinline preload="none"></video>
+      <iframe id="vimeoPlayer" class="player" title="Holiday Video"
+        src="about:blank" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+  <div class="greeting">Wishing you a joyful holiday season!</div>
+  <script>
+    const MP4_URL = ""; // leave blank to use Vimeo
+    const VIMEO_EMBED = "https://player.vimeo.com/video/1135419447?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=0";
+    const poster = document.getElementById('poster');
+    const card = document.getElementById('card');
+    const mp4 = document.getElementById('mp4Player');
+    const vimeo = document.getElementById('vimeoPlayer');
+    function enterFullscreen(el) {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (req) req.call(el);
+    }
+    function playMP4() {
+      mp4.src = MP4_URL;
+      mp4.setAttribute('controls', '');
+      mp4.classList.add('show');
+      poster.style.display = 'none';
+      mp4.play().catch(()=>{});
+      enterFullscreen(card);
+    }
+    function playVimeo() {
+      vimeo.src = VIMEO_EMBED;
+      vimeo.classList.add('show');
+      poster.style.display = 'none';
+      enterFullscreen(card);
+    }
+    poster.addEventListener('click', () => {
+      if (MP4_URL) { playMP4(); } else { playVimeo(); }
+    });
+    poster.tabIndex = 0;
+    poster.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poster.click(); }
+    });
+  </script>
+</body>
+</html>
