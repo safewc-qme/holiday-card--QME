@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Happy Holidays ✨</title>
   <style>
-    :root { --bg: #0b0b0b; --fg: #ffffff; --accent: #ffffffcc; }
+    :root { --bg: #0a2740; --fg: #ffffff; --accent: #ffffffcc; }
     html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
     .wrap { position: fixed; inset: 0; display: grid; place-items: center; }
     .card { position: relative; width: min(100vw, 900px); aspect-ratio: 16 / 9; background: #111; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px #0008; }
@@ -39,33 +39,32 @@
   </div>
   <div class="greeting">Wishing you a joyful holiday season!</div>
   <script>
-    const MP4_URL = ""; // leave blank to use Vimeo
+    const MP4_URL = "";
     const VIMEO_EMBED = "https://player.vimeo.com/video/1135419447?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=0";
     const poster = document.getElementById('poster');
-    const card = document.getElementById('card');
     const mp4 = document.getElementById('mp4Player');
     const vimeo = document.getElementById('vimeoPlayer');
-    function enterFullscreen(el) {
-      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
-      if (req) req.call(el);
-    }
+
     function playMP4() {
       mp4.src = MP4_URL;
       mp4.setAttribute('controls', '');
       mp4.classList.add('show');
       poster.style.display = 'none';
       mp4.play().catch(()=>{});
-      enterFullscreen(card);
+      // no fullscreen
     }
+
     function playVimeo() {
       vimeo.src = VIMEO_EMBED;
       vimeo.classList.add('show');
       poster.style.display = 'none';
-      enterFullscreen(card);
+      // no fullscreen
     }
+
     poster.addEventListener('click', () => {
       if (MP4_URL) { playMP4(); } else { playVimeo(); }
     });
+
     poster.tabIndex = 0;
     poster.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poster.click(); }
