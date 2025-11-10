@@ -7,45 +7,42 @@
   <style>
     :root { --bg: #0a2740; --fg: #ffffff; --accent: #ffffffcc; }
     html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
-    .wrap { position: fixed; inset: 0; display: grid; place-items: center; }
-    .card { position: relative; width: min(100vw, 900px); aspect-ratio: 16 / 9; background: #111; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px #0008; }
-    .poster { position: absolute; inset: 0; background: center / cover no-repeat; display: grid; place-items: center; cursor: pointer; }
+    .wrap { min-height: 100%; display: grid; place-items: center; padding: 24px; box-sizing: border-box; }
+    .card { width: min(100vw, 900px); max-width: 100%; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px #0008; background: #000; }
+    .ratio { position: relative; width: 100%; }
+    .ratio::before { content: ""; display: block; padding-top: 56.25%; } /* 16:9 fallback */
+    .layer { position: absolute; inset: 0; }
+    .poster { background: center / cover no-repeat; display: grid; place-items: center; cursor: pointer; }
     .play { width: 84px; height: 84px; border-radius: 999px; background: #00000066; backdrop-filter: blur(2px); display: grid; place-items: center; transition: transform .2s ease, background .2s ease; border: 1px solid #ffffff33; }
     .play:hover { transform: scale(1.06); background: #00000088; }
     .play:active { transform: scale(0.98); }
     .play svg { width: 44%; height: 44%; fill: var(--fg); filter: drop-shadow(0 2px 6px #000a); }
-    .player {
-      position: absolute;
-      inset: 0;
-      display: none;
-      background: #000;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .player { display: none; width: 100%; height: 100%; border: 0; }
     .player.show { display: block; }
-    .greeting { position: fixed; left: 0; right: 0; bottom: 18px; text-align: center; font-size: 14px; color: var(--accent); letter-spacing: 0.02em; }
+    .greeting { text-align: center; font-size: 14px; color: var(--accent); letter-spacing: 0.02em; margin-top: 14px; }
     @media (max-width: 520px) {
       .card { width: 100vw; border-radius: 0; box-shadow: none; }
-      .greeting { bottom: 10px; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div id="card" class="card">
-      <div id="poster" class="poster" role="button" aria-label="Play holiday video" title="Play" style="background-image: url('poster.jpg');">
-        <div class="play" aria-hidden="true">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+    <div class="card">
+      <div class="ratio">
+        <div id="poster" class="layer poster" role="button" aria-label="Play holiday video" title="Play" style="background-image: url('poster.jpg');">
+          <div class="play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+          </div>
         </div>
+        <video id="mp4Player" class="layer player" playsinline preload="none"></video>
+        <iframe id="vimeoPlayer" class="layer player" title="Holiday Video"
+          src="about:blank"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </div>
-      <video id="mp4Player" class="player" playsinline preload="none"></video>
-      <iframe id="vimeoPlayer" class="player" title="Holiday Video"
-        src="about:blank" frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen></iframe>
     </div>
+    <div class="greeting">Wishing you a joyful holiday season!</div>
   </div>
-  <div class="greeting">Wishing you a joyful holiday season!</div>
   <script>
     const MP4_URL = "";
     const VIMEO_EMBED = "https://player.vimeo.com/video/1135419447?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=0";
@@ -60,17 +57,14 @@
       poster.style.display = 'none';
       mp4.play().catch(()=>{});
     }
-
     function playVimeo() {
       vimeo.src = VIMEO_EMBED;
       vimeo.classList.add('show');
       poster.style.display = 'none';
     }
-
     poster.addEventListener('click', () => {
       if (MP4_URL) { playMP4(); } else { playVimeo(); }
     });
-
     poster.tabIndex = 0;
     poster.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poster.click(); }
